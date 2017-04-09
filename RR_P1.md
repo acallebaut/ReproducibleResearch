@@ -1,26 +1,21 @@
----
-title: "RR_P1"
-author: "Auriane"
-date: "9 april 2017"
-output: github_document
----
+RR\_P1
+================
+Auriane
+9 april 2017
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.path='Figs/')
-```
-## Project 1: Health Condition
+Project 1: Health Condition
+---------------------------
 
 ### Libraries
 
-
-```{r Load Libraries, message=FALSE, warning=FALSE}
-
+``` r
 library(dplyr)
 library(lattice)
 ```
+
 ### 1. Loading and preprocessing the data
 
-```{r Loading and preprocessing the data}
+``` r
 mydata <- tempfile()
 download.file("http://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip", mydata)
 unzip(mydata)
@@ -30,9 +25,18 @@ df.activity <- read.table("activity.csv", sep=",", header = TRUE, na.strings = "
 df.activity$date <- as.Date(df.activity$date, "%Y-%m-%d")
 head(df.activity)
 ```
+
+    ##   steps       date interval
+    ## 1    NA 2012-10-01        0
+    ## 2    NA 2012-10-01        5
+    ## 3    NA 2012-10-01       10
+    ## 4    NA 2012-10-01       15
+    ## 5    NA 2012-10-01       20
+    ## 6    NA 2012-10-01       25
+
 ### 2. What is mean total number of steps taken per day?
 
-``` {r Total Steps per day, include=TRUE}
+``` r
 df.total <- df.activity %>%
   group_by(date=date) %>%
   summarise(TotalSteps = sum(steps))
@@ -41,33 +45,39 @@ df.total$date <- as.Date(df.total$date)
 hist(df.total$TotalSteps, main="Total steps per day", col="pink", xlab="Number of steps")
 ```
 
-```{r Mean Total Number of steps per day, include=TRUE }
+![](Figs/Total%20Steps%20per%20day-1.png)
+
+``` r
 mean_steps <- mean(df.total$TotalSteps, na.rm=T)
 
 median_steps <- median(df.total$TotalSteps, na.rm=T)
 ```
-The `mean` is 10 766.19 and the `median` is 10 765. 
+
+The `mean` is 10 766.19 and the `median` is 10 765.
 
 ### 3. What is the average daily activity pattern?
 
-```{r Average daily activity pattern, include=TRUE}
+``` r
 IntervalSteps <- aggregate(steps ~ interval, df.activity, mean)
 plot(IntervalSteps$interval, IntervalSteps$steps, 
      main="Average Daily Activity Pattern", type="l", 
      xlab="Interval", 
      ylab="Number of Steps")
 ```
-```{r Maximum Number of steps}
+
+![](Figs/Average%20daily%20activity%20pattern-1.png)
+
+``` r
 maxSteps <- IntervalSteps[which.max(IntervalSteps$steps),1]
 ```
 
-The maximum number of steps for 5-min interval is 835. 
+The maximum number of steps for 5-min interval is 835.
 
 ### 4. Imputing missing values
 
-In order to impute missing values, I decided to make use of the mean 5-min interval and make a left-join with the original dataset. 
+In order to impute missing values, I decided to make use of the mean 5-min interval and make a left-join with the original dataset.
 
-```{r Imputing missing values, include=TRUE}
+``` r
 NA_Rows <- sum(is.na(df.activity))
 IntervalSteps$steps_mean <- IntervalSteps$steps
 IntervalSteps$steps <- NULL
@@ -79,14 +89,20 @@ df.activity$Steps_complete <- NULL
 df.activity$steps_mean <- NULL
 Steps_day_sum <- aggregate(steps ~ date, df.activity, sum)
 hist(Steps_day_sum$steps, main="Total steps per day", col="green", xlab="Number of steps")
+```
+
+![](Figs/Imputing%20missing%20values-1.png)
+
+``` r
 Steps_day_mean <- mean(Steps_day_sum$steps)
 Steps_day_median <- median(Steps_day_sum$steps)
 ```
+
 ### 5. Are there differences in activity patterns between weekdays and weekends?
 
-We can see on the plots above that the mean is lower during weekends. 
+We can see on the plots above that the mean is lower during weekends.
 
-```{r Activity pattern weekdays and weekends, include=TRUE}
+``` r
 df.activity$WE_WD <- weekdays(as.Date(df.activity$date))
 weekends <- c("zaterdag", "zondag")
 df.activity$weektype[df.activity$WE_WD %in% weekends] <- "weekend"
@@ -98,3 +114,5 @@ xyplot(steps_Weektype$steps ~ steps_Weektype$interval|steps_Weektype$weektype,
        xlab="5-min Interval", ylab="Steps",
        layout=c(1,2), type="l")
 ```
+
+![](Figs/Activity%20pattern%20weekdays%20and%20weekends-1.png)
