@@ -17,7 +17,6 @@ knitr::opts_chunk$set(echo = TRUE, fig.path='Figs/')
 
 library(dplyr)
 library(lattice)
-
 ```
 ### 1. Loading and preprocessing the data
 
@@ -99,6 +98,3 @@ xyplot(steps_Weektype$steps ~ steps_Weektype$interval|steps_Weektype$weektype,
        xlab="5-min Interval", ylab="Steps",
        layout=c(1,2), type="l")
 ```
-
-
-
