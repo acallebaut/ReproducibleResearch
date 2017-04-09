@@ -1,6 +1,6 @@
 ---
-title: "RR_P1"
-author: "Auriane"
+title: "Reproducible Research Project 1"
+author: "acallebaut"
 date: "9 april 2017"
 output: github_document
 ---
@@ -8,7 +8,6 @@ output: github_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, fig.path='Figs/')
 ```
-## Project 1: Health Condition
 
 ### Libraries
 
@@ -41,7 +40,7 @@ df.total$date <- as.Date(df.total$date)
 hist(df.total$TotalSteps, main="Total steps per day", col="pink", xlab="Number of steps")
 ```
 
-```{r Mean Total Number of steps per day, include=TRUE }
+```{r Mean & Median Total Number of steps per day, include=TRUE }
 mean_steps <- mean(df.total$TotalSteps, na.rm=T)
 
 median_steps <- median(df.total$TotalSteps, na.rm=T)
@@ -65,7 +64,10 @@ The maximum number of steps for 5-min interval is 835.
 
 ### 4. Imputing missing values
 
-In order to impute missing values, I decided to make use of the mean 5-min interval and make a left-join with the original dataset. 
+In order to impute missing values, I decided to make use of the mean 5-min interval and make a left-join with the original dataset.
+The total number of missing values in the dataset is 2 304.
+The mean and median number of steps per day is equal to 10 766. 
+There is no impact of imputing missing data on the estimates of the total daily number of steps as we have almost the same results. 
 
 ```{r Imputing missing values, include=TRUE}
 NA_Rows <- sum(is.na(df.activity))
@@ -82,9 +84,10 @@ hist(Steps_day_sum$steps, main="Total steps per day", col="green", xlab="Number 
 Steps_day_mean <- mean(Steps_day_sum$steps)
 Steps_day_median <- median(Steps_day_sum$steps)
 ```
+
 ### 5. Are there differences in activity patterns between weekdays and weekends?
 
-We can see on the plots above that the mean is lower during weekends. 
+We can see that the activity is higher during weekends.
 
 ```{r Activity pattern weekdays and weekends, include=TRUE}
 df.activity$WE_WD <- weekdays(as.Date(df.activity$date))
